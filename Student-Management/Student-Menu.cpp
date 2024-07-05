@@ -175,6 +175,6 @@ void Addstud(){
         }
     } while (true);
 
-    birthday = Day + " " + Month + " " + Year;.
+    birthday = Day + " " + Month + " " + Year;
 
 }
