@@ -1,7 +1,8 @@
 #include <iostream>
+#include <queue>
+#include <string>
 using namespace std;
 
-void Addstud();
 
 struct StudentList{
     string StudName;
@@ -15,55 +16,99 @@ struct StudentList{
         : StudName(Name), YearLevel(Year), IDNumber(ID), Birthday(Birth), Address(Addr), DegreeProgram(Degr), Gender(Gen) {}
 };
 
+void Addstud(queue<StudentList>& studentQueue);
+bool ValidName(const string& name);
+bool CopyInfo(const queue<StudentList>& studentQueue, const string& name, const string& id);
+void loop(queue<StudentList>& studentQueue);
 
 int main(){
-    Addstud();
+    queue<StudentList> studentQueue;
+    Addstud(studentQueue);
+    
+    return 0;
 }
 
-void Addstud(){
+void Addstud(queue<StudentList>& studentQueue) {
     string Name;
     string NameInput;
     string Year;
     string ID;
+    string IDinput;
     string Month;
     string monthInput;
     string Day;
     string dayInput;
-    string Year;
+    string year;
     string yearInput;
     string birthday;
-    string Degree;
     string address;
-    char Gender;
+    string DegreeList[5] = {"Bachelor of Science in Computer Science", "Bachelor of Science in Information Technology", "Bachelor of Science in Computer Engineering", "Bachelor of Science in Information Systems", "Bachelor of Science in Information Technology with Specialization in Cybersecurity"};
+    string degreeInput;
+    string degree;
+    string yearList[4] ={"1st year","2nd Year","3rd Year","4th year"};
+    string yearLevel;
+    string yearLevelInput;
+    string Gender;
 
     do {
-        cout << "Student Name: ";
-        cin >> NameInput;
-        cin.ignore();
-        bool validname = true;
+        cout << "Student name: ";
+        getline(cin, NameInput);
+        if (!ValidName(NameInput)) {
+            cout << "Please enter a valid name." << endl;
+        }else{
+            Name = NameInput;
+        }
+    } while (!ValidName(NameInput));
 
-        for (char c : NameInput) {
+    do {
+        cout << "ID number: ";
+        cin >> IDinput;
+        bool validID = true;
+
+        for (char c : IDinput) {
             if (!isdigit(c)) {
-                validname = false;
-                cout << "Please enter a valid name"<< endl;
+                validID = false;
+                cout << "Please enter a valid ID number (6 digits long)" << endl;
+                system("PAUSE");
                 break;
-            }else{
-                Name = NameInput;
             }
         }
 
+        if (validID) {
+            if  (IDinput.length() == 6) {
+                ID = IDinput;
+                break;
+            } else {
+                cout << "Please enter a valid ID number (6 digits long)." << endl;
+                system("PAUSE");
+            }
+        }
     } while (true);
 
+    if (IsDuplicate(studentQueue, Name, ID)) {
+        cout << "This student is already in the list." << endl;
+        return;
+    }
+
     do {
-        cout << "Month: ";
+        cout << "Gender (M/F): ";
+        cin >> Gender;
+        if (Gender != "M" && Gender != "m" && Gender != "F" && Gender != "f") {
+            cout << "Input is not included in the options" << endl;
+            system("PAUSE");
+        }
+    } while (Gender != "M" && Gender != "m" && Gender != "F" && Gender != "f");
+
+    do {
+        cout << "Month [1-12]: ";
         cin >> monthInput;
-        cin.ignore();
         bool validmonth = true;
 
         for (char c : monthInput) {
             if (!isdigit(c)) {
                 validmonth = false;
                 cout << "Please enter a valid month (01 - 12)." << endl;
+                system("PAUSE");
                 break;
             }
         }
@@ -75,6 +120,7 @@ void Addstud(){
                 break;
             } else {
                 cout << "Please enter a valid month (01 - 12)." << endl;
+                system("PAUSE");
             }
         }
     } while (true);
@@ -82,13 +128,13 @@ void Addstud(){
     do {
         cout << "Day: ";
         cin >> dayInput;
-        cin.ignore();
         bool validday = true;
 
         for (char b : dayInput) {
             if (!isdigit(b)) {
                 validday = false;
                 cout << "Please enter a valid day (01 - 31)." << endl;
+                system("PAUSE");
                 break;
             }
         }
@@ -100,6 +146,7 @@ void Addstud(){
                 break;
             } else {
                 cout << "Please enter a valid day (01 - 31)." << endl;
+                system("PAUSE");
             }
         }
     } while (true);
@@ -107,7 +154,6 @@ void Addstud(){
     do {
         cout << "Year: ";
         cin >> yearInput;
-        cin.ignore();
         bool validyear = true;
 
         for (char a : yearInput) {
@@ -115,20 +161,93 @@ void Addstud(){
                 validyear = false;
                 cout << "Please enter a valid year" << endl;
                 break;
+                system("PAUSE");
             }
         }
 
         if (validyear) {
-            int year = stoi(yearInput);
-            if (year >= 1920 && year <= 2020) {
-                Year = year;
+            int yearcheck = stoi(yearInput);
+            if (yearcheck >= 1920 && yearcheck <= 2020) {
+                year = yearcheck;
                 break;
             } else {
                 cout << "Please enter a valid year" << endl;
             }
         }
     } while (true);
+    birthday = Day + " " + Month + " " + year;
 
-    birthday = Day + " " + Month + " " + Year;
+    do {
+        cout << "Degree:" << endl;
+        for (int i = 0; i < 5; i++) {
+            cout << "[" << i + 1 << ". " << DegreeList[i] << "]" << endl;
+        }
+        cout << ": ";
+        cin >> degreeInput;
 
+        if (degreeInput.length() == 1) {
+            if (degreeInput == "1" || degreeInput == "2" || degreeInput == "3" || degreeInput == "4" || degreeInput == "5") {
+                degree = DegreeList[stoi(degreeInput) - 1];
+            } else {
+                degreeInput = " ";
+                cout << "Invalid Input, input a number from 1 - 5" << endl;
+                system("PAUSE");
+            }
+        } else {
+            degreeInput = " ";
+            cout << "Invalid Input, input a number from 1 - 5" << endl;
+            system("PAUSE");
+        }
+    } while (degreeInput == " ");
+
+    do {
+        cout << "Year Level [1-4]" << endl;
+        for (int i = 0; i < 4; i++) {
+            cout << "[" << i + 1 << ". " << yearList[i] << "]" << endl;
+        }
+        cout << ": ";
+        cin >> yearLevelInput;
+
+        if (yearLevelInput.length() == 1) {
+            if (yearLevelInput == "1" || yearLevelInput == "2" || yearLevelInput == "3" || yearLevelInput == "4") {
+                yearLevel = yearList[stoi(yearLevelInput) - 1];
+            } else {
+                cout << "Invalid Input, input a number from 1 - 4" << endl;
+                system("PAUSE");
+            }
+        } else {
+            cout << "Invalid Input, input a number from 1 - 4" << endl;
+            system("PAUSE");
+        }
+    } while (yearLevelInput != "1" && yearLevelInput != "2" && yearLevelInput != "3" && yearLevelInput != "4");
+
+    StudentList student(Name, yearLevel, ID, birthday, address, degree, Gender[0]);
+    studentQueue.push(student);
+    loop(studentQueue);
+}
+
+bool ValidName(const string& name){
+    for (char c: name) {
+        if (!isalpha(c) && c != ' '){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool CopyInfo(const queue<StudentList>& studentQueue, const string& name, const string& id) {
+    queue<StudentList> CopyQueue = studentQueue;
+    while (!CopyQueue.empty()) {
+        StudentList student = CopyQueue.front();
+        CopyQueue.pop();
+        if (student.StudName == name && student.IDNumber == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void loop(queue<StudentList>& studentQueue){
+	cin.ignore();
+	Addstud(studentQueue);
 }
