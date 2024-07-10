@@ -1,9 +1,8 @@
 #include <iostream>
 #include <queue>
+#include <string>
 using namespace std;
 
-void Addstud(queue<StudentList>& studentQueue);
-bool ValidName (const string& name);
 
 struct StudentList{
     string StudName;
@@ -17,10 +16,53 @@ struct StudentList{
         : StudName(Name), YearLevel(Year), IDNumber(ID), Birthday(Birth), Address(Addr), DegreeProgram(Degr), Gender(Gen) {}
 };
 
+void Addstud(queue<StudentList>& studentQueue);
+bool ValidName(string& name);
+bool CopyInfo(queue<StudentList>& studentQueue, const string& name, const string& id);
+void loop(queue<StudentList>& studentQueue);
+void displayList(queue<StudentList>& studentQueue);
+void DeleteStudent(queue<StudentList>& studentQueue);
 
 int main(){
     queue<StudentList> studentQueue;
-    Addstud(studentQueue);
+       string input;
+    char option;
+    do{
+    cout << "======= STUDENT MANAGEMENT =======" << endl;
+    cout << "[1. ADD STUDENT]" << endl;
+    cout << "[2. VIEW STUDENT LIST]" << endl;
+    cout << "[3. EDIT STUDENT]" << endl;
+    cout << "[4. DELETE STUDENT]" << endl;
+    cout << "[5. MENU]" << endl;
+    getline(cin, input);
+    if (input.length() == 1){
+        option = input[0];
+    }else{
+        option = ' ';
+    }switch (option){
+    case '1':{
+        Addstud(studentQueue);
+        break;
+    }case '2':{
+        displayList(studentQueue);
+        break;
+    }case '3':{
+        
+        break;
+    }case '4':{
+        DeleteStudent(studentQueue);
+        break;
+    }case '5':{
+        // MainMenu();
+        break;
+    }default:{
+        cout << "Input is invalid......" << endl;
+        cout << "Try again...." << endl;
+        system("PAUSE");
+        break;
+    }
+    }
+    }while(true);
     return 0;
 }
 
@@ -49,7 +91,6 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "Student name: ";
         getline(cin, NameInput);
-        cin.ignore();
         if (!ValidName(NameInput)) {
             cout << "Please enter a valid name." << endl;
         }else{
@@ -57,11 +98,9 @@ void Addstud(queue<StudentList>& studentQueue) {
         }
     } while (!ValidName(NameInput));
 
-
     do {
         cout << "ID number: ";
         cin >> IDinput;
-        cin.ignore();
         bool validID = true;
 
         for (char c : IDinput) {
@@ -84,23 +123,23 @@ void Addstud(queue<StudentList>& studentQueue) {
         }
     } while (true);
 
+    if (CopyInfo(studentQueue, Name, ID)) {
+        cout << "This student is already in the list." << endl;
+        return;
+    }
+
     do {
         cout << "Gender (M/F): ";
-        getline(cin,Gender);
-        cin.ignore();
+        cin >> Gender;
         if (Gender != "M" && Gender != "m" && Gender != "F" && Gender != "f") {
             cout << "Input is not included in the options" << endl;
             system("PAUSE");
         }
     } while (Gender != "M" && Gender != "m" && Gender != "F" && Gender != "f");
 
-
-
-//Inputting the student's birthday
     do {
         cout << "Month [1-12]: ";
         cin >> monthInput;
-        cin.ignore();
         bool validmonth = true;
 
         for (char c : monthInput) {
@@ -127,7 +166,6 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "Day: ";
         cin >> dayInput;
-        cin.ignore();
         bool validday = true;
 
         for (char b : dayInput) {
@@ -154,7 +192,6 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "Year: ";
         cin >> yearInput;
-        cin.ignore();
         bool validyear = true;
 
         for (char a : yearInput) {
@@ -167,25 +204,24 @@ void Addstud(queue<StudentList>& studentQueue) {
         }
 
         if (validyear) {
-            int yearcheck= stoi(yearInput);
+            int yearcheck = stoi(yearInput);
             if (yearcheck >= 1920 && yearcheck <= 2020) {
-                year = yearcheck;
+                year = to_string(yearcheck);
                 break;
             } else {
                 cout << "Please enter a valid year" << endl;
             }
         }
     } while (true);
-    birthday = Day + " " + Month + " " + year;
+    birthday = Day + "/" + Month + "/" + year;
 
-//Inputting the student's Degree
     do {
         cout << "Degree:" << endl;
         for (int i = 0; i < 5; i++) {
             cout << "[" << i + 1 << ". " << DegreeList[i] << "]" << endl;
         }
         cout << ": ";
-        getline(cin, degreeInput);
+        cin >> degreeInput;
 
         if (degreeInput.length() == 1) {
             if (degreeInput == "1" || degreeInput == "2" || degreeInput == "3" || degreeInput == "4" || degreeInput == "5") {
@@ -202,9 +238,7 @@ void Addstud(queue<StudentList>& studentQueue) {
         }
     } while (degreeInput == " ");
 
-
-//Inputting the student's year level
-     do {
+    do {
         cout << "Year Level [1-4]" << endl;
         for (int i = 0; i < 4; i++) {
             cout << "[" << i + 1 << ". " << yearList[i] << "]" << endl;
@@ -227,13 +261,99 @@ void Addstud(queue<StudentList>& studentQueue) {
 
     StudentList student(Name, yearLevel, ID, birthday, address, degree, Gender[0]);
     studentQueue.push(student);
+    displayList(studentQueue);
+    loop(studentQueue);
 }
 
-bool ValidName (const string& name){
-	for (char c: name) {
-		if (!isalpha(c) && c!= ' '){
-			return false;
-		}
-	}
-	return true;
+bool ValidName(string& name){
+    for (char c: name) {
+        if (!isalpha(c) && c != ' '){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool CopyInfo(queue<StudentList>& studentQueue, const string& name, const string& id) {
+    queue<StudentList> CopyQueue = studentQueue;
+    while (!CopyQueue.empty()) {
+        StudentList student = CopyQueue.front();
+        CopyQueue.pop();
+        if (student.StudName == name && student.IDNumber == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void displayList(queue<StudentList>& studentQueue, const string& name, const string& id) {
+    queue<StudentList> CopyQueue = studentQueue;
+    while (!CopyQueue.empty()) {
+        CopyQueue.pop();
+        cout << endl;
+    }
+}
+
+void loop(queue<StudentList>& studentQueue){
+	cin.ignore();
+	Addstud(studentQueue);
+
+}
+
+
+bool CopyInfo(const queue<StudentList>& studentQueue, const string& name, const string& id) {
+    queue<StudentList> CopyQueue = studentQueue;
+    while (!CopyQueue.empty()) {
+        StudentList student = CopyQueue.front();
+        CopyQueue.pop();
+        if (student.StudName == name && student.IDNumber == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void displayList(queue<StudentList>& studentQueue) {
+    queue<StudentList> CopyQueue = studentQueue;
+    while (!CopyQueue.empty()) {
+                StudentList student = CopyQueue.front();
+        cout << "Name: " << student.StudName << endl;
+        cout << "ID Number: " << student.IDNumber << endl;
+        CopyQueue.pop();
+    }
+}
+
+void DeleteStudent(queue<StudentList>& studentQueue, const string& id) {
+    queue<StudentList> tempQueue;
+    string idnum;
+    string Name;
+    bool found = false;
+
+    cout << "Delete Student: " << endl;
+    cout << "Student: ";
+    getline(cin,Name);
+
+    cout << "ID: ";
+    getline(cin,idnum);
+
+    while (!studentQueue.empty()) {
+        StudentList student = studentQueue.front();
+        studentQueue.pop();
+
+        if (student.IDNumber == idnum && student.StudName == Name) {
+            found = true;
+            cout << "Deleting student: " << endl;
+            cout << "Student: " << student.StudName << endl;
+            cout << "ID number: " << student.IDNumber << endl;
+            cout << "=========================" << endl;
+        } else {
+            tempQueue.push(student);
+        }
+    }
+
+    studentQueue = tempQueue;
+
+    if (!found) {
+        cout << "Student with ID " << id << " not found." << endl;
+    }
 }
