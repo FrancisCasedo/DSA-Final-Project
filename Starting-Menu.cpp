@@ -11,8 +11,9 @@ int main()
         cout << "===== MENU ======" << endl;
         cout << "[1. ENROLLMENT]" << endl;
         cout << "[2. STUDENT MANAGEMENT]" << endl;
-        cout << "[3. COURSE MANAGEMENT]" << endl;
-        cout << "[4. EXIT]" << endl;
+        cout << "[3. SCHEDULE MANAGEMENT]" << endl;
+        cout << "[4. COURSE MANAGEMENT]" << endl;
+        cout << "[5. EXIT]" << endl;
         cout << ": ";
         getline(cin, input);
         if (input.length() == 1){
@@ -21,20 +22,20 @@ int main()
             option = '5';
         }switch (option){
         case '1':{
-            // Enrollment();
+            cout << "// Enrollment();"<<endl;
             break;
         }case '2':{
-            // StudentManagement();
+            cout << "// StudentManagement();"<<endl;
             break;
         }case '3':{
-            // ScheduleManagement();
+            cout << "// ScheduleManagement();"<<endl;
             break;
         }case '4':{
-            // CourseManagement();
+            cout << "// CourseManagement();"<<endl;
             break;
         }case '5':{
                 char option2;
-                cout << "Do you want to continue? [Y/N]: ";
+                cout << "Do you want to continue exit? [Y/N]: ";
                 cin >> option2;
                 if (option2 == 'Y' || option2 == 'y'){
                     cout << "Exiting the Program....." << endl;
