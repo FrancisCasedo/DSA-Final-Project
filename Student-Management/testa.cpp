@@ -1,6 +1,8 @@
 #include <iostream>
 #include <queue>
 #include <string>
+#include <fstream>
+
 using namespace std;
 
 struct StudentList{
@@ -68,6 +70,7 @@ int main() {
             }
         }
     } while (true);
+    return 0;
 }
 
 void Addstud(queue<StudentList>& studentQueue) {
@@ -84,13 +87,15 @@ void Addstud(queue<StudentList>& studentQueue) {
     string yearInput;
     string birthday;
     string address;
-    string DegreeList[5] = {"Bachelor of Science in Computer Science", "Bachelor of Science in Information Technology", "Bachelor of Science in Computer Engineering", "Bachelor of Science in Information Systems", "Bachelor of Science in Information Technology with Specialization in Cybersecurity"};
+    string DegreeList[5] = { "Bachelor of Science in Computer Science", "Bachelor of Science in Information Technology", "Bachelor of Science in Computer Engineering", "Bachelor of Science in Information Systems", "Bachelor of Science in Information Technology with Specialization in Cybersecurity" };
     string degreeInput;
     string degree;
-    string yearList[4] = {"1st year","2nd Year","3rd Year","4th year"};
+    string yearList[4] = { "1st year", "2nd Year", "3rd Year", "4th year" };
     string yearLevel;
     string yearLevelInput;
     string Gender;
+    
+    ofstream outFile("student_list.txt", ios::app);
 
     do {
         cout << "Student name: ";
@@ -105,23 +110,24 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "ID number: ";
         cin >> IDinput;
-        cin.ignore(); // To handle the newline character
         bool validID = true;
 
         for (char c : IDinput) {
             if (!isdigit(c)) {
                 validID = false;
                 cout << "Please enter a valid ID number (6 digits long)" << endl;
+                system("PAUSE");
                 break;
             }
         }
 
         if (validID) {
-            if  (IDinput.length() == 6) {
+            if (IDinput.length() == 6) {
                 ID = IDinput;
                 break;
             } else {
                 cout << "Please enter a valid ID number (6 digits long)." << endl;
+                system("PAUSE");
             }
         }
     } while (true);
@@ -134,22 +140,22 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "Gender (M/F): ";
         cin >> Gender;
-        cin.ignore(); // To handle the newline character
         if (Gender != "M" && Gender != "m" && Gender != "F" && Gender != "f") {
             cout << "Input is not included in the options" << endl;
+            system("PAUSE");
         }
     } while (Gender != "M" && Gender != "m" && Gender != "F" && Gender != "f");
 
     do {
         cout << "Month [1-12]: ";
         cin >> monthInput;
-        cin.ignore(); // To handle the newline character
         bool validmonth = true;
 
         for (char c : monthInput) {
             if (!isdigit(c)) {
                 validmonth = false;
                 cout << "Please enter a valid month (01 - 12)." << endl;
+                system("PAUSE");
                 break;
             }
         }
@@ -161,6 +167,7 @@ void Addstud(queue<StudentList>& studentQueue) {
                 break;
             } else {
                 cout << "Please enter a valid month (01 - 12)." << endl;
+                system("PAUSE");
             }
         }
     } while (true);
@@ -168,13 +175,13 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "Day: ";
         cin >> dayInput;
-        cin.ignore(); // To handle the newline character
         bool validday = true;
 
         for (char b : dayInput) {
             if (!isdigit(b)) {
                 validday = false;
                 cout << "Please enter a valid day (01 - 31)." << endl;
+                system("PAUSE");
                 break;
             }
         }
@@ -186,6 +193,7 @@ void Addstud(queue<StudentList>& studentQueue) {
                 break;
             } else {
                 cout << "Please enter a valid day (01 - 31)." << endl;
+                system("PAUSE");
             }
         }
     } while (true);
@@ -193,7 +201,6 @@ void Addstud(queue<StudentList>& studentQueue) {
     do {
         cout << "Year: ";
         cin >> yearInput;
-        cin.ignore(); // To handle the newline character
         bool validyear = true;
 
         for (char a : yearInput) {
@@ -201,6 +208,7 @@ void Addstud(queue<StudentList>& studentQueue) {
                 validyear = false;
                 cout << "Please enter a valid year" << endl;
                 break;
+                system("PAUSE");
             }
         }
 
@@ -218,12 +226,11 @@ void Addstud(queue<StudentList>& studentQueue) {
 
     do {
         cout << "Degree:" << endl;
-                         for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             cout << "[" << i + 1 << ". " << DegreeList[i] << "]" << endl;
-                  }
+        }
         cout << ": ";
         cin >> degreeInput;
-        cin.ignore(); // To handle the newline character
 
         if (degreeInput.length() == 1) {
             if (degreeInput == "1" || degreeInput == "2" || degreeInput == "3" || degreeInput == "4" || degreeInput == "5") {
@@ -231,10 +238,12 @@ void Addstud(queue<StudentList>& studentQueue) {
             } else {
                 degreeInput = " ";
                 cout << "Invalid Input, input a number from 1 - 5" << endl;
+                system("PAUSE");
             }
         } else {
             degreeInput = " ";
             cout << "Invalid Input, input a number from 1 - 5" << endl;
+            system("PAUSE");
         }
     } while (degreeInput == " ");
 
@@ -245,21 +254,38 @@ void Addstud(queue<StudentList>& studentQueue) {
         }
         cout << ": ";
         cin >> yearLevelInput;
-        cin.ignore(); // To handle the newline character
 
         if (yearLevelInput.length() == 1) {
             if (yearLevelInput == "1" || yearLevelInput == "2" || yearLevelInput == "3" || yearLevelInput == "4") {
                 yearLevel = yearList[stoi(yearLevelInput) - 1];
             } else {
                 cout << "Invalid Input, input a number from 1 - 4" << endl;
+                system("PAUSE");
             }
         } else {
             cout << "Invalid Input, input a number from 1 - 4" << endl;
+            system("PAUSE");
         }
     } while (yearLevelInput != "1" && yearLevelInput != "2" && yearLevelInput != "3" && yearLevelInput != "4");
 
+    cin.ignore(); // Clear the newline character left in the input buffer
+    cout << "Address: ";
+    getline(cin, address);
+
     StudentList student(Name, yearLevel, ID, birthday, address, degree, Gender[0]);
     studentQueue.push(student);
+    displayList(studentQueue);
+
+    // Write student info to file
+    outFile << "Name: " << student.StudName << endl;
+    outFile << "Year Level: " << student.YearLevel << endl;
+    outFile << "ID Number: " << student.IDNumber << endl;
+    outFile << "Birthday: " << student.Birthday << endl;
+    outFile << "Address: " << student.Address << endl;
+    outFile << "Degree Program: " << student.DegreeProgram << endl;
+    outFile << "Gender: " << student.Gender << endl;
+    outFile << "----------------------" << endl;
+
 }
 
 bool ValidName(const string& name){
@@ -411,7 +437,28 @@ void EditStudent(queue<StudentList>& studentQueue) {
 
         studentQueue = tempQueue;
 
-        if (!found) {
+        if (found) {
+            ofstream file("student_list.txt");
+            if (file.is_open()) {
+                queue<StudentList> CopyQueue = studentQueue;
+                while (!CopyQueue.empty()) {
+                    StudentList student = CopyQueue.front();
+                    file << student.StudName << endl;
+                    file << student.YearLevel << endl;
+                    file << student.IDNumber << endl;
+                    file << student.Birthday << endl;
+                    file << student.Address << endl;
+                    file << student.DegreeProgram << endl;
+                    file << student.Gender << endl;
+                    file << "=========================" << endl;
+                    CopyQueue.pop();
+                }
+                file.close();
+                cout << "Student list saved to file." << endl;
+            } else {
+                cout << "Unable to open file for saving." << endl;
+            }
+        } else {
             cout << "Student with ID " << idnum << " and Name " << Name << " not found." << endl;
         }
     }
